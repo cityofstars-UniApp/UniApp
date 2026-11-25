@@ -1,7 +1,7 @@
 name: Policy
 on:
   pull_request_target:
-    branches: [master, 'release/dsh-[0-9]+.[0-9]+.[0-9]+']
+    branches: [main, 'release/[0-9]+.[0-9]+.[0-9]+']
     types: [opened, synchronize, reopened, ready_for_review]
   pull_request_review:
     types: [submitted, dismissed]
@@ -46,11 +46,12 @@ jobs:
         with:
           client-id: ${{ vars.DSH_APPROVAL_APP_CLIENT_ID }}
           private-key: ${{ secrets.DSH_APPROVAL_APP_PRIVATE_KEY }}
-          owner: deepseek-harness
-          repositories: deepseek-harness
+          owner: Cityofstarso-O
+          repositories: UniApp
           permission-checks: write
 
-      - uses: deepseek-harness/deepseek-harness-check@master
+      # TODO(governance): same placeholder as pr-check-on-head-branch.yml (Stage 0 wiring list).
+      - uses: Cityofstarso-O/uniapp-check@main
         env:
           CHECK_MODE: ${{ vars.MERGE_POLICY_HEAD_DIFF }}
           CHECK_TOKEN: ${{ steps.token.outputs.token }}

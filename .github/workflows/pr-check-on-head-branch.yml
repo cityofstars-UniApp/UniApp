@@ -1,7 +1,7 @@
 name: Policy
 on:
   pull_request_target:
-    branches: [master, 'release/dsh-[0-9]+.[0-9]+.[0-9]+']
+    branches: [main, 'release/[0-9]+.[0-9]+.[0-9]+']
     types: [opened, synchronize, reopened, ready_for_review, review_requested, auto_merge_enabled, labeled]
 permissions:
   contents: read
@@ -34,7 +34,9 @@ jobs:
           package-manager-cache: false
 
       - id: check
-        uses: deepseek-harness/deepseek-harness-check@master
+        # TODO(governance): fork deepseek-harness/deepseek-harness-check or self-implement
+        # master-diff/review/recheck, then point this at that repository (Stage 0 wiring list).
+        uses: Cityofstarso-O/uniapp-check@main
         env:
           CHECK_MODE: ${{ vars.MERGE_POLICY_MASTER_DIFF }}
         with:
