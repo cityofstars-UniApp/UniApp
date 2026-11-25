@@ -6,6 +6,9 @@ import config from './config.json' with { type: 'json' }
 
 const API_VERSION = '2026-03-10'
 
+/** Repository owner for REST paths and repository(): falls back to the Project organization when unset. */
+export const repositoryOwner = config.repositoryOwner ?? config.organization
+
 function token() {
   const value = process.env.GH_TOKEN || process.env.GITHUB_TOKEN
   if (!value) throw new Error('GH_TOKEN 或 GITHUB_TOKEN 未设置')
@@ -69,7 +72,7 @@ export async function graphql(query, variables) {
  * @returns {Promise<object|null>} Issue snapshot, or null when the number identifies a pull request.
  */
 export async function issueSnapshot(number, status = undefined) {
-  const issue = await api(`/repos/${config.organization}/${config.repository}/issues/${number}`)
+  const issue = await api(`/repos/${repositoryOwner}/${config.repository}/issues/${number}`)
   if (issue.pull_request) return null
   const context = await projectContext(number)
   return {
@@ -96,6 +99,7 @@ export async function projectContext(number, includeStatusActor = false, include
     `query(
       $organization: String!
       $repository: String!
+      $repositoryOwner: String!
       $number: Int!
       $project: Int!
       $includeStatusActor: Boolean!
@@ -126,7 +130,7 @@ export async function projectContext(number, includeStatusActor = false, include
           }
         }
       }
-      repository(owner: $organization, name: $repository) {
+      repository(owner: $repositoryOwner, name: $repository) {
         issue(number: $number) {
           id
           timelineItems(last: 100, itemTypes: [PROJECT_V2_ITEM_STATUS_CHANGED_EVENT])
@@ -160,6 +164,7 @@ export async function projectContext(number, includeStatusActor = false, include
     }`,
     {
       organization: config.organization,
+      repositoryOwner,
       repository: config.repository,
       number,
       project: config.projectNumber,
