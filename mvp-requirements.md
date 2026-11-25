@@ -72,7 +72,9 @@ Note: a sub-app's **own** settings (some tool's preference items) are the sub-ap
 - **Mount**: verify with the sample only that "module integration → registration → home-screen visibility → page entry" works; no second sub-app is required, and no "half-day integration" time metric is set;
 - **Unmount**: temporarily remove the sample module's dependency and registration; verify the host still builds, runs, and shows the empty state with no dangling references; restore the sample after acceptance — the final delivery keeps exactly this one sub-app.
 
-## 4. P1 (does not block foundation acceptance)
+## 4. P1 — deferred items (outside the MVP; boundary, not backlog)
+
+Nothing in this table is an MVP deliverable or a scheduled task. Each row records only its trigger; when a trigger fires, the row moves into its own sub-app requirements or Issue at that moment — not before.
 
 | Item | Trigger |
 |---|---|
@@ -80,7 +82,9 @@ Note: a sub-app's **own** settings (some tool's preference items) are the sub-ap
 | Home-screen polish (sorting / grouping / badge contract) | when sub-apps ≥ 3 |
 | A cross-sub-app data-sharing convention (who owns, who reads) | when the first cross-sub-app data-sharing need appears |
 
-## 5. P2 (deferred capabilities, always consumer-triggered)
+## 5. P2 — deferred capabilities (outside the MVP; always consumer-triggered)
+
+Nothing here is built or scheduled up front. A P2 item starts existing as work only when its first consumer is proposed, then follows the rule of three.
 
 - **iOS version** (if proposed: evaluate via the §7 migration path first; no commitment)
 - Network egress channel, databases, and other shared-service expansions — **nothing prebuilt**; whoever needs it first pulls it in and promotes it per the rule of three
