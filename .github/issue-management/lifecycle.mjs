@@ -21,6 +21,8 @@ import {
 } from './rules.mjs'
 
 const AUDIT_MARKER = '<!-- dsh-issue-policy -->'
+const statusByKey = (key) =>
+  config.statuses.find((status) => status.toLowerCase().replaceAll(' ', '') === key)
 
 /**
  * Initialize every referenced Issue from a newly opened PR.
@@ -131,13 +133,13 @@ async function transitionResolvingIssues(pull, command) {
 export async function runLifecycle(eventName, event) {
   if (eventName === 'issues') {
     const number = event.issue.number
-    if (event.action === 'opened') await setStatus(number, 'Inbox')
+    if (event.action === 'opened') await setStatus(number, statusByKey('inbox'))
     if (event.action === 'closed') {
-      const target = event.issue.state_reason === 'not_planned' ? 'No action' : 'Done'
+      const target = event.issue.state_reason === 'not_planned' ? statusByKey('noaction') : statusByKey('done')
       await setStatus(number, target)
     }
     if (event.action === 'reopened') {
-      await setStatus(number, 'Inbox')
+      await setStatus(number, statusByKey('inbox'))
     }
     await ensureProjectItem(number)
     await auditIssue(number)

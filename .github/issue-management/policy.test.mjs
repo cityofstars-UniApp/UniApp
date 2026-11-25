@@ -83,7 +83,7 @@ const projectGraphqlData = ({
               {
                 id: 'item-id',
                 project: { id: 'project-id' },
-                fieldValueByName: { name: 'Inbox', optionId: 'inbox-option-id' },
+                fieldValueByName: { name: 'In Box', optionId: 'inbox-option-id' },
                 priorityValue:
                   priority === null ? null : { name: priority, optionId: `${priority}-option-id` },
                 startDateValue: startDate === null ? null : { date: startDate },
@@ -117,7 +117,7 @@ const legalIssue = {
   labels: [],
   type: 'Idea',
   priority: null,
-  status: 'In review',
+  status: 'In Review',
   state: 'open',
   stateReason: null,
 }
@@ -335,7 +335,7 @@ test('ignores Issue title, body presentation, and assignee ownership', () => {
 
 test('allows optional metadata in every open Status', () => {
   assert.deepEqual(validateIssue(legalIssue), [])
-  for (const status of ['Inbox', 'Backlog', 'Ready', 'In progress', 'In review']) {
+  for (const status of ['In Box', 'Backlog', 'Ready', 'In Progress', 'In Review']) {
     assert.deepEqual(validateIssue({ ...legalIssue, status }), [])
   }
 })
@@ -459,7 +459,7 @@ test('keeps terminal Status aligned with the native close reason', () => {
   assert.deepEqual(
     validateIssue({
       ...legalIssue,
-      status: 'No action',
+      status: 'No Action',
       state: 'closed',
       stateReason: 'not_planned',
     }),
@@ -544,7 +544,7 @@ test('reads Priority and Status from Project custom fields', async (t) => {
   const issue = await issueSnapshot(42)
 
   assert.equal(issue.priority, 'P1')
-  assert.equal(issue.status, 'Inbox')
+  assert.equal(issue.status, 'In Box')
   assert.deepEqual(urls, [
     `https://api.github.com/repos/${repositoryOwner}/${config.repository}/issues/42`,
     'https://api.github.com/graphql',
@@ -764,29 +764,29 @@ test('keeps PR opening, reopening, and body edits as implementation signals', ()
 })
 
 test('toggles automation-owned work on request changes and repeated review request', () => {
-  for (const status of ['Inbox', 'Backlog', 'Ready']) {
-    assert.equal(nextResolvingIssueStatus(status, 'implementation'), 'In progress')
-    assert.equal(nextResolvingIssueStatus(status, 'review-requested'), 'In review')
-    assert.equal(nextResolvingIssueStatus(status, 'changes-requested'), 'In progress')
+  for (const status of ['In Box', 'Backlog', 'Ready']) {
+    assert.equal(nextResolvingIssueStatus(status, 'implementation'), 'In Progress')
+    assert.equal(nextResolvingIssueStatus(status, 'review-requested'), 'In Review')
+    assert.equal(nextResolvingIssueStatus(status, 'changes-requested'), 'In Progress')
   }
   let status = nextResolvingIssueStatus(
-    'In review',
+    'In Review',
     'changes-requested',
     config.lifecycleActor,
   )
-  assert.equal(status, 'In progress')
+  assert.equal(status, 'In Progress')
   status = nextResolvingIssueStatus(status, 'review-requested')
-  assert.equal(status, 'In review')
+  assert.equal(status, 'In Review')
 })
 
 test('preserves human review status and terminal Issues', () => {
-  assert.equal(nextResolvingIssueStatus('In progress', 'implementation'), null)
-  assert.equal(nextResolvingIssueStatus('In review', 'implementation'), null)
-  assert.equal(nextResolvingIssueStatus('In review', 'review-requested'), null)
-  assert.equal(nextResolvingIssueStatus('In review', 'changes-requested', 'tianyicui'), null)
-  assert.equal(nextResolvingIssueStatus('In review', 'changes-requested'), null)
+  assert.equal(nextResolvingIssueStatus('In Progress', 'implementation'), null)
+  assert.equal(nextResolvingIssueStatus('In Review', 'implementation'), null)
+  assert.equal(nextResolvingIssueStatus('In Review', 'review-requested'), null)
+  assert.equal(nextResolvingIssueStatus('In Review', 'changes-requested', 'tianyicui'), null)
+  assert.equal(nextResolvingIssueStatus('In Review', 'changes-requested'), null)
   assert.equal(nextResolvingIssueStatus('Done', 'review-requested'), null)
-  assert.equal(nextResolvingIssueStatus('No action', 'changes-requested'), null)
+  assert.equal(nextResolvingIssueStatus('No Action', 'changes-requested'), null)
   assert.equal(nextResolvingIssueStatus(null, 'review-requested'), null)
 })
 
@@ -802,7 +802,7 @@ test('keeps lifecycle projection independent of PR metadata enforcement', () => 
   }
 
   assert.ok(validatePullRequest(pull).length > 0)
-  assert.equal(nextResolvingIssueStatus('Inbox', 'review-requested'), 'In review')
+  assert.equal(nextResolvingIssueStatus('In Box', 'review-requested'), 'In Review')
 })
 
 test('exempts Draft, Bot, and App PRs', () => {

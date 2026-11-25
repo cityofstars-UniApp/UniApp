@@ -27,7 +27,14 @@ const LEGACY_LABELS = new Set([
   'llm',
   'web-search',
 ])
-const TERMINAL_STATUSES = new Set(['Done', 'No action'])
+const STATUS = {
+  inbox: config.statuses.find((status) => status.toLowerCase().replaceAll(' ', '') === 'inbox'),
+  inProgress: config.statuses.find((status) => status.toLowerCase().replaceAll(' ', '') === 'inprogress'),
+  inReview: config.statuses.find((status) => status.toLowerCase().replaceAll(' ', '') === 'inreview'),
+  done: config.statuses.find((status) => status.toLowerCase() === 'done'),
+  noAction: config.statuses.find((status) => status.toLowerCase().replaceAll(' ', '') === 'noaction'),
+}
+const TERMINAL_STATUSES = new Set([STATUS.done, STATUS.noAction])
 const ACTIVE_STATUS_ORDER = config.statuses.filter((status) => !TERMINAL_STATUSES.has(status))
 const IMPLEMENTATION_PULL_REQUEST_ACTIONS = new Set([
   'opened',
@@ -35,8 +42,8 @@ const IMPLEMENTATION_PULL_REQUEST_ACTIONS = new Set([
   'reopened',
 ])
 
-for (const status of ['In progress', 'In review']) {
-  if (!ACTIVE_STATUS_ORDER.includes(status)) throw new Error(`config.statuses 缺少 ${status}`)
+for (const [name, status] of Object.entries(STATUS)) {
+  if (!status) throw new Error(`config.statuses 缺少 ${name} 状态`)
 }
 if (typeof config.lifecycleActor !== 'string' || !config.lifecycleActor) {
   throw new Error('config.lifecycleActor 未设置')
@@ -98,15 +105,15 @@ export function resolvingIssueStatusCommand(eventName, event) {
  */
 export function nextResolvingIssueStatus(currentStatus, command, currentStatusActor = null) {
   let target
-  if (command === 'review-requested') target = 'In review'
-  else if (command === 'implementation' || command === 'changes-requested') target = 'In progress'
+  if (command === 'review-requested') target = STATUS.inReview
+  else if (command === 'implementation' || command === 'changes-requested') target = STATUS.inProgress
   else throw new Error(`未知 lifecycle command：${command}`)
 
   const currentIndex = ACTIVE_STATUS_ORDER.indexOf(currentStatus)
   const targetIndex = ACTIVE_STATUS_ORDER.indexOf(target)
   if (
     command === 'changes-requested' &&
-    currentStatus === 'In review' &&
+    currentStatus === STATUS.inReview &&
     currentStatusActor === config.lifecycleActor
   ) {
     return target
@@ -220,16 +227,16 @@ export function validateIssue(issue) {
   if (issue.priority !== null && !PRIORITIES.includes(issue.priority.toLowerCase())) {
     errors.push('Priority 必须为空或为 P0–P3')
   }
-  if (status === 'Done' && (issue.state !== 'closed' || issue.stateReason !== 'completed')) {
+  if (status === STATUS.done && (issue.state !== 'closed' || issue.stateReason !== 'completed')) {
     errors.push('Done 必须对应 Completed 关闭原因')
   }
   if (
-    status === 'No action' &&
+    status === STATUS.noAction &&
     (issue.state !== 'closed' || issue.stateReason !== 'not_planned')
   ) {
     errors.push('No action 必须对应 Not planned 关闭原因')
   }
-  if (!['Done', 'No action'].includes(status ?? '') && issue.state !== 'open') {
+  if (!TERMINAL_STATUSES.has(status ?? '') && issue.state !== 'open') {
     errors.push(`${status} 必须对应开放 Issue`)
   }
   return errors

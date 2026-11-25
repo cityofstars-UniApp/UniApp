@@ -8,12 +8,12 @@
   "startDateField": "Start Date",
   "projectTimeZone": "Asia/Shanghai",
   "statuses": [
-    "Inbox",
+    "In Box",
     "Backlog",
     "Ready",
-    "In progress",
-    "In review",
+    "In Progress",
+    "In Review",
     "Done",
-    "No action"
+    "No Action"
   ]
 }
