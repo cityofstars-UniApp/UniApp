@@ -24,7 +24,7 @@ jobs:
           package-manager-cache: false
 
       # TODO(governance): same placeholder as pr-check-on-head-branch.yml (Stage 0 wiring list).
-      - uses: Cityofstarso-O/uniapp-check@main
+      - uses: cityofstars-UniApp/uniapp-check@main
         with:
           check: recheck
           base-branch: ${{ github.ref_name }}

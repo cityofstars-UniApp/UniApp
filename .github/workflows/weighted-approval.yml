@@ -48,7 +48,7 @@ jobs:
         with:
           client-id: ${{ vars.DSH_APPROVAL_APP_CLIENT_ID }}
           private-key: ${{ secrets.DSH_APPROVAL_APP_PRIVATE_KEY }}
-          owner: Cityofstarso-O
+          owner: cityofstars-UniApp
           repositories: UniApp
           permission-checks: write
       - name: Revoke previous approval status

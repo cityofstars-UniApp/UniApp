@@ -49,7 +49,7 @@ jobs:
         with:
           client-id: ${{ vars.DSH_ISSUE_APP_CLIENT_ID }}
           private-key: ${{ secrets.DSH_ISSUE_APP_PRIVATE_KEY }}
-          owner: Cityofstarso-O
+          owner: cityofstars-UniApp
           repositories: UniApp
       - name: Handle repository event
         env:

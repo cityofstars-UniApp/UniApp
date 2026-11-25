@@ -36,7 +36,7 @@ jobs:
       - id: check
         # TODO(governance): fork deepseek-harness/deepseek-harness-check or self-implement
         # master-diff/review/recheck, then point this at that repository (Stage 0 wiring list).
-        uses: Cityofstarso-O/uniapp-check@main
+        uses: cityofstars-UniApp/uniapp-check@main
         env:
           CHECK_MODE: ${{ vars.MERGE_POLICY_MASTER_DIFF }}
         with:
